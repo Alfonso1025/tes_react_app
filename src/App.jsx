@@ -5,6 +5,9 @@ import Login from './Login';
 import SignUp from './SignUp';
 import Dashboard from './Dashboard';
 import BackgroundCheck from './BackgroundCheck';
+import LoginAdmin from './LoginAdmin';
+import RegistAdmin from './RegistAdmin';
+import AdminPanel from './AdminPanel';
 
 
 function App() {
@@ -12,9 +15,10 @@ function App() {
  const navigate = useNavigate()
   //user authentication state
   const [isAutheticated, setIsAuthenticated] = useState(true)
+  const [isAdminAunthenticated, setIsAdminAuthenticated] = useState(false)
 
-  const ProtectedRoute = ({ user, redirectPath = '/login' }) => {
-    if (!isAutheticated) {
+  const ProtectedRoute = ({ isAuth, redirectPath}) => {
+    if (!isAuth) {
       return <Navigate to={redirectPath} replace />;
     }
   
@@ -66,10 +70,15 @@ const authenticateUser = ()=>{
         <Route index element={<Login />} />
         <Route path="/login" element={<Login/>} />
         <Route path="analytics" element={<SignUp/>} />
-        <Route element={<ProtectedRoute isAutheticated={isAutheticated} />}>
+        <Route element={<ProtectedRoute isAuth={isAutheticated} redirectPath={'/login'} />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="backgroundcheck" element={<BackgroundCheck />} />
         </Route>
+        <Route path="/admin/login"  element={<LoginAdmin setIsAuthenticated={setIsAuthenticated}/>}></Route>
+        <Route path="/admin/register"  element={<RegistAdmin setIsAuthenticated={setIsAuthenticated}/>}></Route>
+        <Route element={<ProtectedRoute isAuth={isAdminAunthenticated} redirectPath={'/admin/login'} />}>
+              <Route path="/admin/panel" exact element={<AdminPanel setIsAdminAuthenticated={setIsAdminAuthenticated}/>}></Route>
+         </Route>
         <Route path="*" element={<p>There's nothing here: 404!</p>} />
       </Routes>
      
